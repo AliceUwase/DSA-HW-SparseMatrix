@@ -102,6 +102,19 @@ class SparseMatrix:
         elif (currRow, currCol) in self.data:
             del self.data[(currRow, currCol)]
 
+    def sparseMatrix_addition(matrix1, matrix2):
+        if matrix1.rows != matrix2.rows or matrix1.cols != matrix2.cols:
+            raise ValueError("Matrices need to have the same dimensions for addition!")
+        result = SparseMatrix(matrix1.rows, matrix1.cols)
+        for (r,c), val in matrix1.data.items():
+            result.setElement(r, c, val + matrix2.getElement(r, c))
+        for (r,c,), val in matrix2.data.items():
+            if (r,c) not in result.data:
+                result.setElement(r, c, val + matrix1.getElement(r, c))
+                return result
+            
+        
+
 
                     
 
