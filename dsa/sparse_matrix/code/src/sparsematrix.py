@@ -113,7 +113,19 @@ class SparseMatrix:
                 result.setElement(r, c, val + matrix1.getElement(r, c))
                 return result
             
-        
+    def sparseMatrix_subtraction(matrix1, matrix2):
+        if matrix1.rows != matrix2.rows or matrix1.cols != matrix2.cols:
+            if matrix1.rows != matrix2.rows or matrix1.cols != matrix2.cols:
+                raise ValueError("Matrices need to have the same dimensions for subtraction!")
+            result = SparseMatrix(matrix1.rows, matrix1.cols)
+            for (r, c) , val in matrix2.data.items():
+                result.setElement(r, c, val - matrix2.getElement(r, c))
+            for (r, c), val in matrix2.data.items():
+                if (r, c) not in result.data: 
+                    result.setElement(r, c, matrix1.getElement(r, c) - val)
+                    return result
+                
+    def sparseMatrix_multiplication(matrix1, matrix2): 
 
 
                     
