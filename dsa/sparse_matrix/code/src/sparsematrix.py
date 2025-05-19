@@ -19,14 +19,14 @@ class SparseMatrix:
 
     def _load_from_file(self, file_path):
         try:
-            with open(file_path, 'r') as file:
+            with open(file_path, 'r') as f:
                 lines = f.readlines()
 
                 if not lines:
                     raise ValueError("Input file is empty!")
                 
                 dimension_line = lines[0].strip()
-                ports = dimension_line.split(',')
+                parts = dimension_line.split(',')
                 rows_found = False
                 cols_found = False
                 for part in parts:
@@ -68,4 +68,41 @@ class SparseMatrix:
                                 if 0 <= row < self.rows and 0 <= col < self.cols:
                                     if value != 0:
                                         self.data[(row, col)] = value 
-                
+                                    else:
+                                        raise ValueError(f"Row or Column index out of bounds: ({row}, {col} for matrix of sizee ({self.rows}, {self.cols})")
+                            except ValueError:
+                                raise ValueError("Input file has wrong format. Excepted ' (row, col, value)' with integer values.")
+                        else: 
+                            raise ValueError("Input file has wrong format. Expected '(row, col, value)'")
+                    elif line:
+                        raise ValueError("Input file has wrong format. Non-empty lines should be format '(row, col, value)'")
+                    
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Error: Input file '{file_path}' not found! ")
+        except ValueError as e:
+            raise ValueError(f"Error loading matrix from '{file_path}': {e}")
+        except Exception as e:
+            raise Exception(f"unexpected error occured while loading  matricx from '{file_path}': {e}")
+        
+    def getelement(self, currRow, currCol):
+        if not (0 <= currRow < self.rows and 0 <= currCol < self.cols):
+            raise IndexError("Row or column index is out of limit!")
+        return self.data.get((currRow, currCol), 0)
+    
+    def setElement(self, currRow, currCol, value):
+        if not (0 <= currRow < self.rows and 0 <= currCol < self.cols):
+            raise IndexError("Row or column index is out of limit!")
+        return self.data.get((currRow, currCol), 0)
+    
+    def setElement(self, currRow, currCol, value):
+        if not (0 <= currRow < self.rows and 0 <= currCol < self.cols):
+            raise IndexError("Row or column index is out of limit!")
+        if value != 0:
+            self.data[(currRow, currCol)] = value 
+        elif (currRow, currCol) in self.data:
+            del self.data[(currRow, currCol)]
+
+
+                    
+
+
