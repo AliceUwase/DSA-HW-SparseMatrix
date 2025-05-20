@@ -35,7 +35,6 @@ class SparseMatrix:
                         key = sub_parts[0].strip()
                         value_str = sub_parts[1].strip()
                         try:
-
                             value = int(value_str)
                             if key == 'rows':
                                 self.rows = value
@@ -83,13 +82,9 @@ class SparseMatrix:
             raise ValueError(f"Error loading matrix from '{file_path}': {e}")
         except Exception as e:
             raise Exception(f"unexpected error occured while loading  matricx from '{file_path}': {e}")
-        
-    def getelement(self, currRow, currCol):
-        if not (0 <= currRow < self.rows and 0 <= currCol < self.cols):
-            raise IndexError("Row or column index is out of limit!")
-        return self.data.get((currRow, currCol), 0)
-    
-    def setElement(self, currRow, currCol, value):
+    pass  
+
+    def getElement(self, currRow, currCol):
         if not (0 <= currRow < self.rows and 0 <= currCol < self.cols):
             raise IndexError("Row or column index is out of limit!")
         return self.data.get((currRow, currCol), 0)
@@ -102,30 +97,110 @@ class SparseMatrix:
         elif (currRow, currCol) in self.data:
             del self.data[(currRow, currCol)]
 
+    @staticmethod
     def sparseMatrix_addition(matrix1, matrix2):
         if matrix1.rows != matrix2.rows or matrix1.cols != matrix2.cols:
             raise ValueError("Matrices need to have the same dimensions for addition!")
         result = SparseMatrix(matrix1.rows, matrix1.cols)
-        for (r,c), val in matrix1.data.items():
-            result.setElement(r, c, val + matrix2.getElement(r, c))
-        for (r,c,), val in matrix2.data.items():
-            if (r,c) not in result.data:
-                result.setElement(r, c, val + matrix1.getElement(r, c))
-                return result
+
+        # adding elements from matrix1 and setting them in the result matrix
+        for (r, c), val in matrix1.data.items():
+            result.setElement(r, c, val)
             
+        # adding elements from matrix2, combining them with existing values from matrix1
+        for (r, c), val in matrix2.data.items():
+            current_val = result.getElement(r, c)
+            result.setElement(r, c, current_val + val)
+        
+
+    @staticmethod
     def sparseMatrix_subtraction(matrix1, matrix2):
         if matrix1.rows != matrix2.rows or matrix1.cols != matrix2.cols:
-            if matrix1.rows != matrix2.rows or matrix1.cols != matrix2.cols:
-                raise ValueError("Matrices need to have the same dimensions for subtraction!")
-            result = SparseMatrix(matrix1.rows, matrix1.cols)
-            for (r, c) , val in matrix2.data.items():
-                result.setElement(r, c, val - matrix2.getElement(r, c))
-            for (r, c), val in matrix2.data.items():
-                if (r, c) not in result.data: 
-                    result.setElement(r, c, matrix1.getElement(r, c) - val)
-                    return result
-                
+            raise ValueError("Matrices need to have the same dimensions for subtraction!")
+            
+        result = SparseMatrix(matrix1.rows, matrix1.cols)
+        
+        # Add all elements from matrix1
+        for (r, c), val in matrix1.data.items():
+            result.setElement(r, c, val)
+            
+        # Subtract elements from matrix2
+        for (r, c), val in matrix2.data.items():
+            current_val = result.getElement(r, c)
+            result.setElement(r, c, current_val - val)
+            
+        return result
+        
+    @staticmethod
     def sparseMatrix_multiplication(matrix1, matrix2): 
+        if matrix1.cols != matrix2.rows:
+            raise ValueError("Number of columns in first matrix must be equal to number of rows in second matrix for multiplication!")
+            
+        result = SparseMatrix(matrix1.rows, matrix2.cols)
+        
+        # For each non-zero element in matrix1
+        for (r1, c1), val1 in matrix1.data.items():
+            # For each non-zero element in matrix2 that can multiply with val1
+            for (r2, c2), val2 in matrix2.data.items():
+                if c1 == r2:  # If multiplication is possible
+                    product = val1 * val2
+                    current = result.getElement(r1, c2)
+                    result.setElement(r1, c2, current + product)
+                    
+        return result
+    @staticmethod
+    def display_SparseMatrix(matrix):
+        print(f"Matrix ({matrix.rows}x{matrix.cols}):")
+        for r in range(matrix.rows):
+            row_str = ""
+            for c in range(matrix.cols):
+                row_str += f"{matrix.getElement(r, c)}\t"
+            print(row_str)
+        
+
+if __name__ == "__main__":
+        while True:
+            print("\nSelect Matrix Operation:")
+            print("1. Addition")
+            print("2. Subtraction")
+            print("3. Multiplication")
+            print("4. Exit")
+
+            choice = input("Choose an operation (1-4): ")
+
+            if choice == '4':
+                print("Exiting the program")
+                break
+                
+            if choice in ('1', '2', '3'):
+                try:
+                    file1_path = input("Enter the file path for first sparse matrix: ")
+                    matrix1 = SparseMatrix(file1_path)
+                    file2_path = input("Enter file path for the second sparse matrix: ")
+                    matrix2 = SparseMatrix(file2_path)
+
+                    if choice == '1':
+                        result_matrix = SparseMatrix.sparseMatrix_addition(matrix1, matrix2)
+                        print("\nAddition Result:")
+                        SparseMatrix.display_SparseMatrix(result_matrix)
+                    elif choice == '2':
+                        result_matrix = SparseMatrix.sparseMatrix_subtraction(matrix1, matrix2)
+                        print("\nSubtraction Result:")
+                        SparseMatrix.display_SparseMatrix(result_matrix)
+                    elif choice == '3':
+                        result_matrix = SparseMatrix.sparseMatrix_multiplication(matrix1, matrix2)
+                        print("\nMultiplication Result:")
+                        SparseMatrix.display_SparseMatrix(result_matrix)
+                except FileNotFoundError as e:
+                    print(f"Error: {e}")
+                except ValueError as e:
+                    print(f"Error: {e}")
+                except Exception as e:
+                    print(f"An unexpected error occurred: {e}")
+            else:
+                print("Invalid choice. Please choose from 1 to 4!")
+
+
 
 
                     
