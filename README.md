@@ -1,6 +1,6 @@
 # DSA-HW-SparseMatrix
 
-This project implements a custom Python solution for representing and performing fundamental operations (addition, subtraction, and multiplication) on sparse matrices. The implementation focuses on memory and runtime optimization by storing only non-zero elements, adhering to strict guidelines against using standard built-in libraries for core functionalities like pattern matching.
+This program is representing and performing fundamental operations (addition, subtraction, and multiplication) on sparse matrices. The implementation focuses on memory and runtime optimization by storing only non-zero elements.
 
 
 ## Features
