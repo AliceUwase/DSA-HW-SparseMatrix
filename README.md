@@ -62,6 +62,6 @@ The core logic resides in `sparsematrix.py`:
 This project was developed with insights and foundational knowledge from the following resources:
 - * "Sparse Matrix Representation" on GeeksforGeeks - `https://www.geeksforgeeks.org/sparse-matrix-representation/`
 - * "Python String Methods Tutorial" on Real Python - `https://realpython.com/python-string-methods/`
--   "Data structure|Strings|Sparse matrix" by Engineering Education - `https://www.youtube.com/watch?v=VTaHoRyBmAQ`
+- * "Data structure|Strings|Sparse matrix" by Engineering Education - `https://www.youtube.com/watch?v=VTaHoRyBmAQ`
 
 ```
