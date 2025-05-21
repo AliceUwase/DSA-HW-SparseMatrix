@@ -123,11 +123,11 @@ class SparseMatrix:
             
         result = SparseMatrix(matrix1.rows, matrix1.cols)
         
-        # Add all elements from matrix1
+        # add all elements from matrix1
         for (r, c), val in matrix1.data.items():
             result.setElement(r, c, val)
             
-        # Subtract elements from matrix2
+        # subtract elements from matrix2
         for (r, c), val in matrix2.data.items():
             current_val = result.getElement(r, c)
             result.setElement(r, c, current_val - val)
@@ -143,7 +143,7 @@ class SparseMatrix:
         
         for (r1, c1), val1 in matrix1.data.items():
             for (r2, c2), val2 in matrix2.data.items():
-                if c1 == r2:  # If multiplication is possible
+                if c1 == r2:  
                     product = val1 * val2
                     current = result.getElement(r1, c2)
                     result.setElement(r1, c2, current + product)
