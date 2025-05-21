@@ -26,6 +26,7 @@ class SparseMatrix:
                     raise ValueError("Input file is empty!")
                 
                 dimension_line = lines[0].strip()
+                print("DEBUG: First line read from file:", repr(dimension_line))
                 parts = dimension_line.split(',')
                 rows_found = False
                 cols_found = False
@@ -61,14 +62,14 @@ class SparseMatrix:
                         values = content.split(',')
                         if len(values) == 3:
                             try:
-                                row = int(values[0].strip())
-                                col = int(values[1].strip())
+                                rows = int(values[0].strip())
+                                cols = int(values[1].strip())
                                 value = float(values[2].strip())
-                                if 0 <= row < self.rows and 0 <= col < self.cols:
+                                if 0 <= rows < self.rows and 0 <= cols < self.cols:
                                     if value != 0:
-                                        self.data[(row, col)] = value 
+                                        self.data[(rows, cols)] = value 
                                     else:
-                                        raise ValueError(f"Row or Column index out of bounds: ({row}, {col} for matrix of sizee ({self.rows}, {self.cols})")
+                                        raise ValueError(f"Row or Column index out of bounds: ({rows}, {cols} for matrix of sizee ({self.rows}, {self.cols})")
                             except ValueError:
                                 raise ValueError("Input file has wrong format. Excepted ' (row, col, value)' with integer values.")
                         else: 
@@ -174,9 +175,9 @@ if __name__ == "__main__":
                 
             if choice in ('1', '2', '3'):
                 try:
-                    file1_path = input("Enter the file path for first sparse matrix: ")
+                    file1_path = input("Enter the file path for first sparse matrix: ").strip()
                     matrix1 = SparseMatrix(file1_path)
-                    file2_path = input("Enter file path for the second sparse matrix: ")
+                    file2_path = input("Enter file path for the second sparse matrix: ").strip()
                     matrix2 = SparseMatrix(file2_path)
 
                     if choice == '1':
