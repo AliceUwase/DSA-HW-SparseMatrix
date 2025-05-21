@@ -13,11 +13,11 @@ This program is representing and performing fundamental operations (addition, su
     * **Multiplication:** 
 
 
-* **Error Handling methods:** Implements comprehensive error handling for:
+* **Error Handling methods:** 
     * `FileNotFoundError`: If input files do not exist.
-    * `ValueError`: For incorrect input file formats (e.g., missing dimensions, wrong syntax for entries, non-integer values, out-of-bounds indices, incompatible matrix dimensions for operations).
+    * `ValueError`: For incorrect input file formats 
     * `IndexError`: For attempts to access or set elements outside matrix bounds.
-    * General `Exception` for unexpected issues.
+    
 
 
 
