@@ -20,39 +20,37 @@ class SparseMatrix:
     def _load_from_file(self, file_path):
         try:
             with open(file_path, 'r') as f:
-                lines = f.readlines()
+                # lines = f.readlines()
 
-                if not lines:
-                    raise ValueError("Input file is empty!")
-                
-                dimension_line = lines[0].strip()
-                print("DEBUG: First line read from file:", repr(dimension_line))
-                parts = dimension_line.split(',')
+                # if not lines:
+                #     raise ValueError("Input file is empty!")
+                self.rows = int(f.readline().split("=")[1].strip())
+
+                self.cols = int(f.readline().split("=")[1].strip())
                 rows_found = False
                 cols_found = False
-                for part in parts:
-                    sub_parts = part.strip().split('=')
-                    if len(sub_parts) == 2:
-                        key = sub_parts[0].strip()
-                        value_str = sub_parts[1].strip()
-                        try:
-                            value = int(value_str)
-                            if key == 'rows':
-                                self.rows = value
-                                rows_found = True 
-                            elif key == 'cols':
-                                self.cols = value 
-                                cols_found = True
-                        except ValueError:
-                            raise ValueError("Input file has a wrong format. Rows and Cols should be integers!")
-                    else:
-                        raise ValueError("Input file has a wrong format. Expected 'rows=int' and cols=int' on first line!")
+                if self.rows:
+                    rows_found = True
+                if self.cols:
+                    cols_found = True    
+                # dimension_line = lines[0].strip()
+                # print("DEBUG: First line read from file:", repr(dimension_line))
+                # parts = dimension_line.split(',')
+                
+                # for part in parts:
+                #     sub_parts = part.strip().split('=')
+                #     if len(sub_parts) == 2:
+                #         key = sub_parts[0].strip()
+                #         value_str = sub_parts[1].strip()
+                        
+                #     else:
+                #         raise ValueError("Input file has a wrong format. Expected 'rows=int' and cols=int' on first line!")
                     
                 if not rows_found or not cols_found:
                     raise ValueError("Input file has a wrong format. First lineshould ecify both 'rows' and 'cols'!")
                 
-                data_lines = lines[1:]
-                for line in data_lines:
+                # data_lines = lines[1:]
+                for line in f:
                     line = line.strip()
                     if not line:
                         continue
@@ -61,17 +59,20 @@ class SparseMatrix:
                         content = line[1:-1].strip()
                         values = content.split(',')
                         if len(values) == 3:
+                            # print("DEBUG: Values read from file:", repr(values))
                             try:
                                 rows = int(values[0].strip())
                                 cols = int(values[1].strip())
-                                value = float(values[2].strip())
+                                value = int(values[2].strip())
                                 if 0 <= rows < self.rows and 0 <= cols < self.cols:
                                     if value != 0:
                                         self.data[(rows, cols)] = value 
+                                        # print(f"DEBUG: {repr(self.data)}")
                                     else:
                                         raise ValueError(f"Row or Column index out of bounds: ({rows}, {cols} for matrix of sizee ({self.rows}, {self.cols})")
                             except ValueError:
-                                raise ValueError("Input file has wrong format. Excepted ' (row, col, value)' with integer values.")
+                                continue
+                                # raise ValueError("Input file has wrong format. Excepted ' (row, col, value)' with integer values.")
                         else: 
                             raise ValueError("Input file has wrong format. Expected '(row, col, value)'")
                     elif line:
@@ -112,6 +113,7 @@ class SparseMatrix:
         for (r, c), val in matrix2.data.items():
             current_val = result.getElement(r, c)
             result.setElement(r, c, current_val + val)
+        return result
         
 
     @staticmethod
@@ -139,9 +141,7 @@ class SparseMatrix:
             
         result = SparseMatrix(matrix1.rows, matrix2.cols)
         
-        # For each non-zero element in matrix1
         for (r1, c1), val1 in matrix1.data.items():
-            # For each non-zero element in matrix2 that can multiply with val1
             for (r2, c2), val2 in matrix2.data.items():
                 if c1 == r2:  # If multiplication is possible
                     product = val1 * val2
